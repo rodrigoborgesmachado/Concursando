@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <script type="text/javascript" src="javascript/jquery.js"></script>
+    <link rel="icon" type="../image/png" sizes="25x17" href="images/logo16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <title>Concursando - Vestibulando</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascript/scriptpagina.js"></script>
+    <script type="text/javascript" src="javascript/jquery.maskedinput.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+
+<body id="home" data-spy="scroll" data-target=".navbar" data-offset="60">
+    <div class="modal fade" id="modalLogar" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title" id="tituloModal">Login</h4>
+                </div>
+                <div class="modal-body">
+                    Login:
+                    <br>
+                    <div class="input-group floating-label">
+                        <input class="form-control valid" data-val="true"  data-val-length-max="50" data-val-required="* Campo obrigatório!!" id="UserLogin" name="UserLogin" placeholder="" type="text" value="" required>
+                        <span class="validationMessage field-validation-valid" data-valmsg-for="UserLogin" data-valmsg-replace="true">
+                        </span>
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </span>
+                    </div>
+                    Senha:
+                    <br>
+                    <div class="input-group floating-label">
+                        <input class="form-control" data-val="true" data-val-required="* Campo obrigatório!!" id="UserPassword" name="UserPassword" placeholder="" type="password" required>
+                        <span class="field-validation-valid validationMessage" data-valmsg-for="UserPassword" data-valmsg-replace="true">
+                        </span>
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
+                    </div>
+                    <a target="_blank" href="EsqueciSenha.html">Esqueci a senha</a>
+                    <div class="modal-footer">
+                        <button value="Login" id="logar" onclick="logar()" class="btn btn-info">Login</button>
+                    </div>
+                </div>            
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="tituloModal"></h4>
+                </div>
+                <div class="modal-body" id="textoModal">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="topnav navbar navbar-default navbar-fixed-top">
+        <ul class="nav navbar-nav navbar-right">
+            <li id="navbarInicio">
+                <a onclick="document.location.reload(true);">Início</a>
+            </li>
+            <li id="navbarLogar">
+                <a onclick="AbreModalLogar();">Logar</a>
+            </li>
+            <li id="navbarCadastrar">
+                <a  onclick="AbrePaginaCadastrar();">Registrar</a>
+            </li>
+            <li id="navbarCadastrarProva">
+                <a onclick="CadastrarProva();">Cadastrar Prova</a>
+            </li>
+            <li id="navbarSair">
+                <a onclick="Deslogar();">Sair</a>
+            </li>
+        </ul>
+    </div>
+    <div class="jumbotron">
+        <div class="interna" style="background-color: #dddddd;" align="justify">
+            <div id="contact" class="container-fluid bg-grey">
+                <div class="row">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h2 style="text-align: center;">
+                                Concursando - Vestibulando
+                            </h2>
+                            <hr>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="espacoInicio">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3>
+                                Faça questões de concursos e vestibulares de todo o Brasil e veja seus resultados. Escolha entre fazer provas inteiras ou um número específico de questões.
+                            </h3>
+                            <hr>
+                            <br>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-12 form-group" id="game">
+                                    <h4 style="text-align: center;">
+                                        <button class="buttonStartGame" onclick="EscolherProvas()">Escolha por prova</button>
+                                        <br>
+                                        <button class="buttonInicio" onclick="EscolherNumeroQuestoes()">Escolha por quantidade de questões</button>
+                                        <br>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="espacoCadastrarUsuario">
+                    <div class="col-sm-12">
+                        <h3>
+                            Qual seu nome?
+                        </h3>
+                        <input class="form-control" id="nome" name="nome" placeholder="Nome" type="text" required>
+                        <h3>
+                            Qual seu email? (Precisamos dessa informação caso precise recuperar a senha e para logar no site!)
+                        </h3>
+                        <input class="form-control" id="email" name="email" placeholder="E-mail" type="email" required>
+                        <h3>
+                            Senha?
+                        </h3>
+                        <input class="form-control" id="senha" name="senha" placeholder="" type="password" required>
+                        <h3>
+                            Data da nascimento?
+                        </h3>
+                        <input class="form-control" id="dataNascimento" name="dataNascimento" placeholder="" type="date" required>
+                        <h4 style="text-align: center;">
+                            <button id="botaoCadastrar" class="buttonStartGame" onclick="CadastrarUsuario()">Cadastrar</button>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-grey" style="text-align: center;">
+        SunSale System
+    </footer>
+    </div>
+</body>
+
+</html>
+
+<script>
+    document.getElementById('espacoInicio').hidden = false;
+    document.getElementById('espacoCadastrarUsuario').hidden = true;
+    ControlaNavBar();
+
+    function ControlaNavBar(){
+        document.getElementById('navbarSair').style.display = sessionStorage.getItem('logado') != '1' ? 'none' : '';
+        document.getElementById('navbarLogar').style.display = sessionStorage.getItem('logado') == '1' ? 'none' : '';
+        document.getElementById('navbarCadastrar').style.display = sessionStorage.getItem('logado') == '1' ? 'none' : '';
+        document.getElementById('navbarCadastrarProva').style.display = sessionStorage.getItem('logado') == '1' && sessionStorage.getItem('admin') == '1' ? '' : 'none';
+        
+    }
+
+    function AbrePaginaCadastrar() {
+        document.getElementById('espacoInicio').hidden = true;
+        document.getElementById('espacoCadastrarUsuario').hidden = false;
+        document.getElementById('nome').focus();
+    }
+
+    function AbreModalLogar(){
+        $("#modalLogar").modal();
+    }
+
+    function Deslogar(){
+        sessionStorage.setItem('logado', '0');
+        sessionStorage.setItem('usuario', '');
+        sessionStorage.setItem('admin', '0');
+        sessionStorage.setItem('CodigoUsuario', '-1');
+
+        ControlaNavBar();
+    }
+
+    function alerta(mensagem) {
+        AbrirModal("Alerta", mensagem);
+    }
+
+    function informa(mensagem) {
+        AbrirModal("Informação", mensagem);
+    }
+
+    function AbrirModal(tituloModal, textoModal) {
+        var titulo = document.querySelector('#tituloModal');
+        var texto = document.querySelector('#textoModal');
+
+        titulo.innerHTML = '';
+        titulo.innerHTML = tituloModal;
+        texto.innerHTML = '';
+        texto.innerHTML = '<p>' + textoModal + '</p>';
+
+        $("#myModal").modal();
+        document.getElementById('UserLogin').focus();
+    }
+
+    function logar(){
+        document.getElementById('logar').disabled = true;
+
+        var login = document.getElementById('UserLogin').value;
+        var pass = document.getElementById('UserPassword').value;
+
+        var retorno = Login(login, pass);
+        if(retorno.Sucesso)
+        {
+            sessionStorage.setItem('logado', '1');
+            sessionStorage.setItem('usuario', login);
+            sessionStorage.setItem('admin', retorno.Admin);
+            sessionStorage.setItem('CodigoUsuario', retorno.CodigoUsuario);
+            console.log(retorno.CodigoUsuario);
+            
+            $("#modalLogar").modal('hide');
+            document.location.reload(true);
+        }
+        else{
+            alerta("Login Inválido!");
+        }
+    }
+
+    function CadastrarUsuario(){
+        var nome = document.getElementById('nome').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('senha').value;
+        var datanascimento = document.getElementById('dataNascimento').value;
+
+        document.getElementById('botaoCadastrar').disabled = true;
+
+        InserirUsuario(nome, email, password, datanascimento);
+    }
+
+    function CadastrarProva(){
+        AbreUrlNewTab('http://concursando.sunsalesystem.com.br/InsereProva.html');
+    }
+
+</script>

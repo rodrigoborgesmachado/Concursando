@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <script type="text/javascript" src="javascript/jquery.js"></script>
+    <link rel="icon" type="../image/png" sizes="25x17" href="images/logo16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <title>Concursando - Vestibulando</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascript/scriptpagina.js"></script>
+    <script type="text/javascript" src="javascript/jquery.maskedinput.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+
+<body id="home" data-spy="scroll" data-target=".navbar" data-offset="60">
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="tituloModal"></h4>
+                </div>
+                <div class="modal-body" id="textoModal">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron">
+        <div class="interna" style="background-color: #dddddd;" align="justify">
+            <div id="contact" class="container-fluid bg-grey">
+                <div class="row" id="espacoCadastrarUsuario">
+                    <div class="col-sm-12">
+                        <h3>
+                            Nome da prova
+                        </h3>
+                        <input class="form-control" id="nome" name="nome" placeholder="Nome e descrição da prova" type="text" required>
+                        <h3>
+                            Local da prova
+                        </h3>
+                        <input class="form-control" id="local" name="local" placeholder="Local onde a prova foi aplicada" type="text" required>
+                        <h3>
+                            Tipo de prova
+                        </h3>
+                        <input class="form-control" id="tipo" name="tipo" placeholder="Prova Azul; Tipo I" type="text" required>
+                        <h3>
+                            Data de aplicação
+                        </h3>
+                        <input class="form-control" id="dataAplicacao" name="dataAplicacao" placeholder="2020" type="text" required>
+                        <h3>
+                            Observação sobre a prova
+                        </h3>
+                        <input class="form-control" id="observacaoProva" name="observacaoProva" placeholder="" type="text" required>
+                        <h3>
+                            Observação sobre o gabarito
+                        </h3>
+                        <input class="form-control" id="observacaoGabarito" name="observacaoGabarito" placeholder="" type="text" required>
+                        <h3>
+                            Arquivo de prova:
+                        </h3>
+                        <input class="form-control" type="file" id="fileProva" name="fileProva"><br>
+                        <h3>
+                            Arquivo de gabarito:
+                        </h3>
+                        <input class="form-control" type="file" id="fileGabarito" name="fileGabarito"><br>
+
+                        <h4 style="text-align: center;">
+                            <button id="botaoCadastrar" class="buttonStartGame" onclick="Cadastrar()">Cadastrar</button>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-grey" style="text-align: center;">
+        SunSale System
+    </footer>
+    </div>
+</body>
+
+</html>
+
+<script>
+
+    document.getElementById('fileProva').addEventListener('input', getDataURLProva, false);
+    document.getElementById('fileGabarito').addEventListener('input', getDataURLGabarito, false);
+    var Gabarito = null;
+    var ProvaArquivo = null;
+
+    function getDataURLProva() {
+        document.getElementById('botaoCadastrar').disabled = true;
+
+        var feito = false;
+        var reader = new FileReader();
+
+        reader.onload = function () {
+            document.getElementById('botaoCadastrar').disabled = false;
+            ProvaArquivo = reader.result;
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    
+        reader.readAsDataURL(document.getElementById('fileProva').files[0]);
+    }
+
+    function getDataURLGabarito() {
+        document.getElementById('botaoCadastrar').disabled = true;
+
+        var feito = false;
+        var reader = new FileReader();
+
+        reader.onload = function () {
+            document.getElementById('botaoCadastrar').disabled = false;
+            Gabarito = reader.result;
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    
+        reader.readAsDataURL(document.getElementById('fileGabarito').files[0]);
+    }
+
+    function alerta(mensagem) {
+        AbrirModal("Alerta", mensagem);
+    }
+
+    function informa(mensagem) {
+        AbrirModal("Informação", mensagem);
+    }
+
+    function AbrirModal(tituloModal, textoModal) {
+        var titulo = document.querySelector('#tituloModal');
+        var texto = document.querySelector('#textoModal');
+
+        titulo.innerHTML = '';
+        titulo.innerHTML = tituloModal;
+        texto.innerHTML = '';
+        texto.innerHTML = '<p>' + textoModal + '</p>';
+
+        $("#myModal").modal();
+        document.getElementById('UserLogin').focus();
+    }
+
+    function Cadastrar(){
+        var Nomeprova = document.getElementById('nome').value;
+        var Local = document.getElementById('local').value;
+        var Tipoprova = document.getElementById('tipo').value;
+        var Dataaplicacao = document.getElementById('dataAplicacao').value;
+        var Observacaoprova = document.getElementById('observacaoProva').value;
+        var Observacaogabarito = document.getElementById('observacaoGabarito').value;
+        var CodigoUsuario = sessionStorage.getItem('CodigoUsuario');
+
+        console.log(ProvaArquivo);
+        console.log(Gabarito);
+        document.getElementById('botaoCadastrar').disabled = true;
+
+        InserirProva(Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, ProvaArquivo, Gabarito, CodigoUsuario);
+        Gabarito = null;
+        ProvaArquivo = null;
+    }
+
+</script>
