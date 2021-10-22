@@ -27,10 +27,10 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h3>
-                                Email:
+                                Nova senha:
                             </h3>
-                            <input class="form-control valid" data-val="true"  data-val-length-max="50" data-val-required="* Campo obrigatório!!" id="email" name="email" placeholder="" type="email" value="" required>
-                            <button class="buttonStartGame" id="buttonRecupera" onclick="EnviarEmailRecupera()">Recuperar Senha</button>
+                            <input class="form-control valid" data-val="true"  data-val-length-max="50" data-val-required="* Campo obrigatório!!" id="senha" name="senha" placeholder="" type="password" value="" required>
+                            <button class="buttonStartGame" id="buttonRecupera" onclick="Recupera()">Alterar Senha</button>
                             <hr>
                             <br>
                         </div>
@@ -47,10 +47,16 @@
 
 <script>
     
-    function EnviarEmailRecupera(){
-        var email = document.getElementById('email').value;
+    var obj = queryObj();
+    if(obj.guid == ''|| obj == null){
+        alert('Página bloqueada');
+        window.close();
+    }
+
+    function Recupera(){
+        var senha = document.getElementById('senha').value;
         document.getElementById('buttonRecupera').disabled = true;
-        RecuperaSenha(email);
+        FinalizaRecuperaSenha(senha, obj.guid, obj.email);
     }
 
 </script>

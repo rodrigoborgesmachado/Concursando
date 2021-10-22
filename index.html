@@ -20,6 +20,9 @@
 </head>
 
 <body id="home" data-spy="scroll" data-target=".navbar" data-offset="60">
+    <div id="loading">
+        <img id="loading-image" src="images/hug.gif" alt="Loading..." />
+    </div>
     <div class="modal fade" id="modalLogar" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -56,6 +59,31 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalAlterarSenha" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title" id="tituloModal">Alterar Senha</h4>
+                </div>
+                <div class="modal-body">
+                    Nova Senha:
+                    <br>
+                    <div class="input-group floating-label">
+                        <input class="form-control" data-val="true" data-val-required="* Campo obrigatório!!" id="senhaAlterar" name="senhaAlterar" placeholder="" type="password" required>
+                        <span class="field-validation-valid validationMessage" data-valmsg-for="senhaAlterar" data-valmsg-replace="true">
+                        </span>
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
+                    </div>
+                    <div class="modal-footer">
+                        <button value="alterarSenha" id="alterarSenha" onclick="AlterarSenha()" class="btn btn-info">Alterar</button>
+                    </div>
+                </div>            
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -84,6 +112,9 @@
             </li>
             <li id="navbarCadastrarProva">
                 <a onclick="CadastrarProva();">Cadastrar Prova</a>
+            </li>
+            <li id="navbarAlterarSenha">
+                <a onclick="AbreModalAlterarSenha();">Alterar Senha</a>
             </li>
             <li id="navbarSair">
                 <a onclick="Deslogar();">Sair</a>
@@ -119,7 +150,7 @@
                             <div class="row">
                                 <div class="col-sm-12 form-group" id="game">
                                     <h4 style="text-align: center;">
-                                        <button class="buttonStartGame" onclick="EscolherProvas()">Escolha por prova</button>
+                                        <button class="buttonStartGame" onclick="AbreListagemProvas()">Escolha por prova</button>
                                         <br>
                                         <button class="buttonInicio" onclick="EscolherNumeroQuestoes()">Escolha por quantidade de questões</button>
                                         <br>
@@ -152,6 +183,9 @@
                         </h4>
                     </div>
                 </div>
+                <div class="row" id="espacoProvas">
+                    
+                </div>
             </div>
         </div>
     </div>
@@ -164,35 +198,66 @@
 </html>
 
 <script>
+
     document.getElementById('espacoInicio').hidden = false;
     document.getElementById('espacoCadastrarUsuario').hidden = true;
+    document.getElementById('espacoProvas').hidden = true;
     ControlaNavBar();
+    removeLoader();
 
     function ControlaNavBar(){
         document.getElementById('navbarSair').style.display = sessionStorage.getItem('logado') != '1' ? 'none' : '';
+        document.getElementById('navbarAlterarSenha').style.display = sessionStorage.getItem('logado') != '1' ? 'none' : '';
+        
         document.getElementById('navbarLogar').style.display = sessionStorage.getItem('logado') == '1' ? 'none' : '';
         document.getElementById('navbarCadastrar').style.display = sessionStorage.getItem('logado') == '1' ? 'none' : '';
+
         document.getElementById('navbarCadastrarProva').style.display = sessionStorage.getItem('logado') == '1' && sessionStorage.getItem('admin') == '1' ? '' : 'none';
-        
     }
 
     function AbrePaginaCadastrar() {
         document.getElementById('espacoInicio').hidden = true;
         document.getElementById('espacoCadastrarUsuario').hidden = false;
+        document.getElementById('espacoProvas').hidden = true;
         document.getElementById('nome').focus();
+    }
+
+    function AbreListagemProvas(){
+        if(!logado()){
+            alerta('Você precisa estar logado!');
+            return;
+        }
+
+        openLoader();
+
+        PreencheProvas();
+
+        removeLoader();
+    }
+
+    function PreencheProvas(){
+        document.getElementById('espacoInicio').hidden = true;
+        document.getElementById('espacoCadastrarUsuario').hidden = true;
+        document.getElementById('espacoProvas').hidden = false;
+        
+        var codigoUsuario = sessionStorage.getItem('CodigoUsuario')
+        var listaProvas = BuscarProvas(codigoUsuario);
+        document.getElementById('espacoProvas').innerHTML = MontaHtmlProvas(listaProvas.lista);
     }
 
     function AbreModalLogar(){
         $("#modalLogar").modal();
     }
 
+    function AbreModalAlterarSenha(){
+        $("#modalAlterarSenha").modal();
+    }
+    
     function Deslogar(){
         sessionStorage.setItem('logado', '0');
         sessionStorage.setItem('usuario', '');
         sessionStorage.setItem('admin', '0');
         sessionStorage.setItem('CodigoUsuario', '-1');
-
-        ControlaNavBar();
     }
 
     function alerta(mensagem) {
@@ -222,7 +287,10 @@
         var login = document.getElementById('UserLogin').value;
         var pass = document.getElementById('UserPassword').value;
 
+        openLoader();
         var retorno = Login(login, pass);
+        removeLoader();
+
         if(retorno.Sucesso)
         {
             sessionStorage.setItem('logado', '1');
@@ -236,6 +304,8 @@
         }
         else{
             alerta("Login Inválido!");
+            document.getElementById('UserPassword').value = '';
+            document.getElementById('logar').disabled = false;
         }
     }
 
@@ -246,12 +316,47 @@
         var datanascimento = document.getElementById('dataNascimento').value;
 
         document.getElementById('botaoCadastrar').disabled = true;
-
+        
+        openLoader();
         InserirUsuario(nome, email, password, datanascimento);
+        removeLoader();
+    }
+
+    function AlterarSenha(){
+        var codigo = sessionStorage.getItem('CodigoUsuario');
+        var senha = document.getElementById('senhaAlterar').value;
+
+        openLoader();
+        var result = AtualizaSenha(codigo, senha);
+        removeLoader();
     }
 
     function CadastrarProva(){
         AbreUrlNewTab('http://concursando.sunsalesystem.com.br/InsereProva.html');
+    }
+
+    function removeLoader(){
+        $( "#loading" ).fadeOut(500, function() {
+            document.getElementById('loading').hidden = true;
+        });  
+    }
+
+    function openLoader(){
+        document.getElementById('loading').style["display"] = "";
+        pollVisibility();
+    }
+
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    async function pollVisibility() {
+        try {
+            if (document.getElementById("loading").style.display == '') {
+                return null;
+            } else {
+                return await delay(100).then(pollVisibility);
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
 
 </script>
