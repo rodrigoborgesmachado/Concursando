@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <script type="text/javascript" src="javascript/jquery.js"></script>
+    <link rel="icon" type="../image/png" sizes="25x17" href="images/logo16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <title>Concursando - Vestibulando</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascript/scriptpagina.js"></script>
+    <script type="text/javascript" src="javascript/jquery.maskedinput.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+
+<body id="home" data-spy="scroll" data-target=".navbar" data-offset="60">
+    <div id="loading">
+        <img id="loading-image" src="images/hug.gif" alt="Loading..." />
+    </div>
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="tituloModal"></h4>
+                </div>
+                <div class="modal-body" id="textoModal">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron">
+        <div class="interna" style="background-color: #dddddd;" align="justify">
+            <div id="contact" class="container-fluid bg-grey">
+                <div class="row">
+                    <div class="col-sm-12" id="descricaoProva">
+                    </div>
+                    <div class="col-sm-12">
+                        <h3>
+                            Questão
+                        </h3>
+                        <textarea class="form-control" id="questao" name="questao" placeholder="Descrição da questão" type="text" required rows="30"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                        &nbsp
+                    </div>
+                    <div class="col-sm-4">
+                        <h4 style="text-align: center;">
+                            <button class="buttonStartGame" onclick="abrirTesteQuestao()">Testar layout</button>
+                        </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>
+                            Observeção
+                        </h3>
+                        <input class="form-control" id="observacaoQuestao" name="observacaoQuestao" placeholder="Alguma observação sobre a questão" type="text" required>
+                        <h3>
+                            Matéria
+                        </h3>
+                        <input class="form-control" id="materia" name="materia" placeholder="LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS" type="text" required>
+                        <h3>
+                            Número da questão
+                        </h3>
+                        <input class="form-control" id="numeroQuestao" name="numeroQuestao" placeholder="1" type="text" required>
+                        <h3>
+                            Anexos da questão:
+                        </h3>
+                        <input class="form-control" type="file" id="fileQuestao" name="fileQuestao" multiple="multiple">
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <h3>
+                            Respostas:
+                        </h3>
+                    </div>
+                    <div id="respostas" class="col-sm-10">
+                        
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                    </div>
+                    <div id="respostas" class="col-sm-4">
+                        <h4 style="text-align: center;">
+                            <button type="button" class="btn btn-info" onclick="adicionarResposta()">Adicionar Resposta</button>
+                        </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                    </div>
+                    <div id="respostas" class="col-sm-4">
+                        <h4 style="text-align: center;">
+                            <button id="botaoCadastrar" class="buttonStartGame" onclick="CadastrarQuestao()">Cadastrar</button>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-grey" style="text-align: center;">
+        SunSale System
+    </footer>
+    </div>
+</body>
+
+</html>
+
+<script>
+
+    document.getElementById('descricaoProva').innerHTML = `<h3>${queryObj().Prova} - ${queryObj().Descricao}</h3>`;
+    document.getElementById('fileQuestao').addEventListener('input', getDataURLQuestao, false);
+    questoesAnexo = new Array();
+    respostasAnexo = new Array();
+    removeLoader();
+
+    function getDataURLQuestao() {
+        var feito = false;
+        var reader = new FileReader();
+
+        reader.onload = function () {
+            questoesAnexo.push(reader.result);
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    
+        var files = document.getElementById('fileQuestao').files;
+        reader.readAsDataURL(files[files.length-1]);
+        
+    }
+
+    function getDataURLResposta(number) {
+        var feito = false;
+        var reader = new FileReader();
+
+        reader.onload = function () {
+            respostasAnexo[number-1].push(reader.result);
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    
+        var files = document.getElementById('fileResposta' + number).files;
+        reader.readAsDataURL(files[files.length-1]);
+        
+    }
+
+    let numeroQuestoes = 0;
+    adicionarResposta();
+
+    function adicionarResposta(){
+        numeroQuestoes+=1;
+        var html = '';
+
+        html += `
+                        <br>
+                        <h3 style="text-align: center;">
+                            Resposta - ${numeroQuestoes}
+                        </h3>
+                        <h3>
+                            Texto Resposta
+                        </h3>
+                        <input class="form-control" id="numeroQuestao${numeroQuestoes}" name="resposta${numeroQuestoes}" placeholder="Texto da resposta" type="text" required>
+                        <h3>
+                            Observação da resposta
+                        </h3>
+                        <input class="form-control" id="observacaoResposta${numeroQuestoes}" name="observacaoResposta${numeroQuestoes}" placeholder="Observações" type="text" required>
+                        <h3>
+                            Reposta correta
+                        </h3>
+                        <h3><input class="" id="respostaCorretaSim${numeroQuestoes}" name="respostaCorreta${numeroQuestoes}" value="Sim" type="radio" required>&nbsp Sim</h3>
+                        <h3><input class="" id="respostaCorretaNao${numeroQuestoes}" name="respostaCorreta${numeroQuestoes}" value="Não" type="radio" required checked>&nbsp Não</h3>
+                        <h3>
+                            Anexos da resposta:
+                        </h3>
+                        <input class="form-control" type="file" id="fileResposta${numeroQuestoes}" name="fileResposta" multiple="multiple" oninput='getDataURLResposta(${numeroQuestoes})'>
+        `;
+
+        document.getElementById('respostas').innerHTML += html; 
+        respostasAnexo.push(new Array());
+    }
+
+    function alerta(mensagem) {
+        AbrirModal("Alerta", mensagem);
+    }
+
+    function informa(mensagem) {
+        AbrirModal("Informação", mensagem);
+    }
+
+    function abrirTesteQuestao() {
+        AbrirModal("A questão ficará dessa forma na tela", document.getElementById('questao').value);
+    }
+
+    function AbrirModal(tituloModal, textoModal) {
+        var titulo = document.querySelector('#tituloModal');
+        var texto = document.querySelector('#textoModal');
+
+        titulo.innerHTML = '';
+        titulo.innerHTML = tituloModal;
+        texto.innerHTML = '';
+        texto.innerHTML = '<p>' + textoModal + '</p>';
+
+        $("#myModal").modal();
+        document.getElementById('UserLogin').focus();
+    }
+
+    class Anexo{
+        constructor(Anexo){
+            this.Anexo = Anexo;
+        }
+    }
+    
+    class Questao{
+        constructor(Campoquestao, Observacaoquestao, Materia, Codigoprova, Numeroquestao, anexosQuestao){
+            this.Campoquestao = Campoquestao;
+            this.Observacaoquestao = Observacaoquestao;
+            this.Materia = Materia;
+            this.Codigoprova = Codigoprova;
+            this.Numeroquestao = Numeroquestao;
+            this.anexosQuestao = anexosQuestao;
+        }
+    }
+
+    class RespostaQuestao{
+        constructor(Textoresposta, Certa, Observacaoresposta, anexos){
+            this.Textoresposta = Textoresposta;
+            this.Certa = Certa;
+            this.Observacaoresposta = Observacaoresposta;
+            this.anexos = anexos;
+        }
+    }
+
+    class QuestaoProva{
+        constructor(questao, respostas){
+            this.questao = questao;
+            this.respostas = respostas;
+        }
+    }
+
+    function MontaQuestao(){
+        var Campoquestao = document.getElementById('questao').value;
+        var Observacaoquestao = document.getElementById('observacaoQuestao').value;
+        var Materia = document.getElementById('materia').value;
+        var Codigoprova = queryObj().Prova;
+        var Numeroquestao = document.getElementById('numeroQuestao').value;
+        var anexosQuestao = new Array();
+        
+        for(i = 0;i<questoesAnexo.length;i++){
+            var temp = new Anexo(questoesAnexo[i]);
+            anexosQuestao.push(temp);
+        }
+        var questao = new Questao(Campoquestao, Observacaoquestao, Materia, Codigoprova, Numeroquestao, anexosQuestao);
+        return questao;
+    }
+    
+    function MontaRespostas(){
+        var respostas = new Array();
+        
+        for(i = 1; i <= numeroQuestoes;i++){
+            var Textoresposta = document.getElementById('numeroQuestao' + i).value;
+            var Certa = document.getElementById('respostaCorretaSim' + i).checked ? '1' : '0';
+            var Observacaoresposta = document.getElementById('observacaoResposta' + i).value;
+            var anexos = new Array();
+        
+            for(j = 0;j<respostasAnexo[i-1].length;j++){
+                var temp = new Anexo(respostasAnexo[i-1][j]);
+                anexos.push(temp);
+            }
+            var temp = new RespostaQuestao(Textoresposta, Certa, Observacaoresposta, anexos);
+            respostas.push(temp);
+        }
+        
+        return respostas;
+    }
+
+    function CadastrarQuestao(){
+        openLoader();
+
+        var questao = MontaQuestao();
+        var respostas = MontaRespostas();
+
+        var questaoProva = new QuestaoProva(questao, respostas);
+
+        var xhr = new XMLHttpRequest();
+        
+        var dados = JSON.stringify(questaoProva);
+        console.log(dados);
+
+        xhr.open("POST", "http://concursando.sunsalesystem.com.br/PHP/InsereQuestao.php");
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.addEventListener("load", function() {
+            removeLoader();
+            if (xhr.status == 200) {
+                alert('Inserido com sucesso!');
+                location.reload();
+                topo();
+            } else {
+                alert('Não foi possível inserir');
+            }
+        }
+        );
+
+        xhr.send(dados);
+    }
+
+    function removeLoader(){
+        $( "#loading" ).fadeOut(500, function() {
+            document.getElementById('loading').hidden = true;
+        });  
+    }
+
+    function openLoader(){
+        document.getElementById('loading').style["display"] = "";
+        pollVisibility();
+    }
+
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    async function pollVisibility() {
+        try {
+            if (document.getElementById("loading").style.display == '') {
+                return null;
+            } else {
+                return await delay(100).then(pollVisibility);
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+
+</script>

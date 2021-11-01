@@ -152,7 +152,7 @@
                                     <h4 style="text-align: center;">
                                         <button class="buttonStartGame" onclick="AbreListagemProvas()">Escolha por prova</button>
                                         <br>
-                                        <button class="buttonInicio" onclick="EscolherNumeroQuestoes()">Escolha por quantidade de questões</button>
+                                        <button class="buttonInicio" style="display: none;" onclick="EscolherNumeroQuestoes()">Escolha por quantidade de questões</button>
                                         <br>
                                     </h4>
                                 </div>
@@ -230,19 +230,12 @@
 
         openLoader();
 
-        PreencheProvas();
-
-        removeLoader();
-    }
-
-    function PreencheProvas(){
         document.getElementById('espacoInicio').hidden = true;
         document.getElementById('espacoCadastrarUsuario').hidden = true;
         document.getElementById('espacoProvas').hidden = false;
         
         var codigoUsuario = sessionStorage.getItem('CodigoUsuario')
-        var listaProvas = BuscarProvas(codigoUsuario);
-        document.getElementById('espacoProvas').innerHTML = MontaHtmlProvas(listaProvas.lista);
+        BuscarProvas(codigoUsuario);
     }
 
     function AbreModalLogar(){
@@ -258,6 +251,7 @@
         sessionStorage.setItem('usuario', '');
         sessionStorage.setItem('admin', '0');
         sessionStorage.setItem('CodigoUsuario', '-1');
+        document.location.reload(true);
     }
 
     function alerta(mensagem) {
@@ -288,25 +282,7 @@
         var pass = document.getElementById('UserPassword').value;
 
         openLoader();
-        var retorno = Login(login, pass);
-        removeLoader();
-
-        if(retorno.Sucesso)
-        {
-            sessionStorage.setItem('logado', '1');
-            sessionStorage.setItem('usuario', login);
-            sessionStorage.setItem('admin', retorno.Admin);
-            sessionStorage.setItem('CodigoUsuario', retorno.CodigoUsuario);
-            console.log(retorno.CodigoUsuario);
-            
-            $("#modalLogar").modal('hide');
-            document.location.reload(true);
-        }
-        else{
-            alerta("Login Inválido!");
-            document.getElementById('UserPassword').value = '';
-            document.getElementById('logar').disabled = false;
-        }
+        Login(login, pass);
     }
 
     function CadastrarUsuario(){

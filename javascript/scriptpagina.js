@@ -68,11 +68,14 @@ function dataURLtoFile(dataurl, filename) {
 }
 
 function logado(){
-    return sessionStorage.getItem('CodigoUsuario') != -1;
+    return sessionStorage.getItem('logado') != '0';
 }
 
-function MontaHtmlProvas(lista){
-    console.log(lista);
+function MontaHtmlProvasMobile(lista){
+    return MontaHtmlProvasPc(lista);
+}
+
+function MontaHtmlProvasPc(lista){
     var html = '';
 
     html+= `<div class="col-sm-12">
@@ -85,8 +88,10 @@ function MontaHtmlProvas(lista){
                             <th><h4 style="text-align: center;">Data/Ano</h4></th>
                             <th><h4 style="text-align: center;">Local</h4></th>
                             <th><h4 style="text-align: center;">Tipo</h4></th>
+                            <th><h4 style="text-align: center;">Questões</h4></th>
                             <th><h4 style="text-align: center;">Prova</h4></th>
                             <th><h4 style="text-align: center;">Gabarito</h4></th>
+                            <th><h4 style="text-align: center;` + (ehAdmin() ? '' : 'display: none;') + `"></h4></th>
                             </tr>
                     </thread>
                     <tbody>
@@ -110,17 +115,26 @@ function MontaHtmlProvas(lista){
         html += '       <h4 style="text-align: center;">' + lista[i].Tipoprova + '</h4>';
         html += '   </td>';
         html += '   <td>';
+        html += '       <h4 style="text-align: center;">' + lista[i].QuantidadeQuestoesResolvidas + '/' + lista[i].QuantidadeQuestoesTotal + '</h4>';
+        html += '   </td>';
+        html += '   <td>';
         html += '       <span class="input-group-addon">';
-        html += `           <button type="button" class="btn btn-info" onclick="downloadURI('` + lista[i].ProvaArquivo + `', '` + lista[i].Nomeprova + `_PV.pdf')"><i class="glyphicon glyphicon-list-alt"></i></button>`;
+        html += `           <button type="button" class="btn btn-info" onclick="BuscarProva('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')"><i class="glyphicon glyphicon-list-alt"></i></button>`;
         html += '       </span>';
         html += '   </td>';
         html += '   <td>';
         html += '       <span class="input-group-addon">';
-        html += `           <button type="button" class="btn btn-info" onclick="downloadURI('` + lista[i].Gabarito + `', '` + lista[i].Nomeprova + `_GB.pdf')"><i class="glyphicon glyphicon-list-alt"></i></button>`;
+        html += `           <button type="button" class="btn btn-info" onclick="BuscarGabarito('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')"><i class="glyphicon glyphicon-list-alt"></i></button>`;
         html += '       </span>';
         html += '   </td>';
+        html += '   <td>';
+        html += `       <button type="button" style="text-align: center;` + (ehAdmin() ? '' : 'display: none;') + `;" class="btn btn-info" onclick="adicionarQuestao('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')">Adicionar Questões</button>`;
+        html += '   </td>';
+        html += '   <td>';
+        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="fazerQuestoes('` + lista[i].Codigo + `')">` + (lista[i].QuantidadeQuestoesResolvidas > 0 ? 'Continuar' : 'Iniciar') + `</button>`;
+        html += '   </td>';
         html += '</tr>';
-
+        
     }
 
     html += `       </tbody>';
@@ -128,6 +142,10 @@ function MontaHtmlProvas(lista){
             </div>`;
 
     return html;
+}
+
+function adicionarQuestao(prova, descricao){
+    window.open('http://concursando.sunsalesystem.com.br/InsereQuestao.html?Prova=' + prova + '&Descricao=' + descricao, '_blank');
 }
 
 function InserirProva(Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, ProvaArquivo, Gabarito, CodigoUsuario){
@@ -179,28 +197,60 @@ function AtualizaSenha(codigo, senha){
 
 function Login(login, pass){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/Logar.php?login=" + login + "&pass=" + stringToHash(pass), false);
-    xhr.send(null);
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/Logar.php?login=" + login + "&pass=" + stringToHash(pass));
+    
+    xhr.addEventListener("load", function() {
+        removeLoader();
+        if (xhr.status == 200) {
+            var retorno = JSON.parse(xhr.responseText);
+            if(retorno.Sucesso)
+            {
+                sessionStorage.setItem('logado', '1');
+                sessionStorage.setItem('usuario', login);
+                sessionStorage.setItem('admin', retorno.Admin);
+                sessionStorage.setItem('CodigoUsuario', retorno.CodigoUsuario);
+                console.log(retorno.CodigoUsuario);
 
-    if(xhr.status === 200){
-        return JSON.parse(xhr.responseText);
+                $("#modalLogar").modal('hide');
+                document.location.reload(true);
+            }
+            else{
+                alerta("Login Inválido!");
+                document.getElementById('UserPassword').value = '';
+                document.getElementById('logar').disabled = false;
+            }
+        } else {
+            alert('Não foi possível atualizar.');
+            //erro!
+        }
     }
-    else{
-        return null;
-    }
+    );
+
+    xhr.send(null);
 }
 
 function BuscarProvas(codigoUsuario){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarProvas.php?codigoUsuario=" + codigoUsuario, false);
-    xhr.send(null);
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarProvas.php?codigoUsuario=" + codigoUsuario);
 
-    if(xhr.status === 200){
-        return JSON.parse(xhr.responseText);
+    xhr.addEventListener("load", function() {
+        removeLoader();
+
+        if (xhr.status == 200) {
+            console.log(xhr.response);
+            if(navigator.platform == 'Win32'){
+                document.getElementById('espacoProvas').innerHTML = MontaHtmlProvasPc(JSON.parse(xhr.responseText).lista);
+            }
+            else{
+                document.getElementById('espacoProvas').innerHTML = MontaHtmlProvasMobile(JSON.parse(xhr.responseText).lista);
+            }
+        } else {
+            //erro!
+        }
     }
-    else{
-        return null;
-    }
+    );
+
+    xhr.send();
 }
 
 function RegistraRecuperacao(email, guid){
@@ -289,6 +339,50 @@ function FinalizaRecuperaSenha(senha, guid, email){
     xhr.send(dados);
 }
 
+function BuscarProva(codigo, nomeProva){
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("POST", "http://concursando.sunsalesystem.com.br/PHP/BuscarArquivoProva.php?codigoProva=" + codigo);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    openLoader();
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+
+            console.log(JSON.parse(xhr.response).Arquivo);
+            downloadURI(JSON.parse(xhr.response).Arquivo, nomeProva + '_prova.pdf');
+            //sucesso!
+        } else {
+            //erro!
+        }
+        removeLoader()
+    }
+    );
+
+    xhr.send();
+}
+
+function BuscarGabarito(codigo, nomeProva){
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("POST", "http://concursando.sunsalesystem.com.br/PHP/BuscarArquivoGabarito.php?codigoProva=" + codigo);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    openLoader();
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+            downloadURI(JSON.parse(xhr.response).Arquivo, nomeProva + '_gabarito.pdf');
+            //sucesso!
+        } else {
+            //erro!
+        }
+        removeLoader()
+    }
+    );
+
+    xhr.send();
+}
+
 function CreateGuid() {  
    function _p8(s) {  
       var p = (Math.random().toString(16)+"000000000").substr(2,8);  
@@ -304,4 +398,8 @@ function queryObj() {
         result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]) || '';
     });
     return result;
+}
+
+function ehAdmin(){
+    return sessionStorage.getItem('admin') == '1';
 }
