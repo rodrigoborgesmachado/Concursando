@@ -8,14 +8,14 @@
     <title>Concursando - Vestibulando</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="javascript/scriptpagina.js"></script>
     <script type="text/javascript" src="javascript/jquery.maskedinput.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 
@@ -249,9 +249,10 @@
     }
 
     class QuestaoProva{
-        constructor(questao, respostas){
+        constructor(questao, respostas, codUsuario){
             this.questao = questao;
             this.respostas = respostas;
+            this.codUsuario = codUsuario;
         }
     }
 
@@ -297,7 +298,7 @@
         var questao = MontaQuestao();
         var respostas = MontaRespostas();
 
-        var questaoProva = new QuestaoProva(questao, respostas);
+        var questaoProva = new QuestaoProva(questao, respostas, sessionStorage.getItem('CodigoUsuario'));
 
         var xhr = new XMLHttpRequest();
         

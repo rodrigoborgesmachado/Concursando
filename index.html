@@ -8,14 +8,14 @@
     <title>Concursando - Vestibulando</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="javascript/scriptpagina.js"></script>
     <script type="text/javascript" src="javascript/jquery.maskedinput.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 
@@ -186,6 +186,9 @@
                 <div class="row" id="espacoProvas">
                     
                 </div>
+                <div class="row" id="espacoQuestoes">
+                    
+                </div>
             </div>
         </div>
     </div>
@@ -202,6 +205,8 @@
     document.getElementById('espacoInicio').hidden = false;
     document.getElementById('espacoCadastrarUsuario').hidden = true;
     document.getElementById('espacoProvas').hidden = true;
+    document.getElementById('espacoQuestoes').hidden = true;
+    
     ControlaNavBar();
     removeLoader();
 
@@ -219,6 +224,7 @@
         document.getElementById('espacoInicio').hidden = true;
         document.getElementById('espacoCadastrarUsuario').hidden = false;
         document.getElementById('espacoProvas').hidden = true;
+        document.getElementById('espacoQuestoes').hidden = true;
         document.getElementById('nome').focus();
     }
 
@@ -233,9 +239,21 @@
         document.getElementById('espacoInicio').hidden = true;
         document.getElementById('espacoCadastrarUsuario').hidden = true;
         document.getElementById('espacoProvas').hidden = false;
+        document.getElementById('espacoQuestoes').hidden = true;
         
         var codigoUsuario = sessionStorage.getItem('CodigoUsuario')
         BuscarProvas(codigoUsuario);
+    }
+
+    function AbreListagemQuestoesProva(codigoProva, prova){
+        openLoader();
+
+        document.getElementById('espacoInicio').hidden = true;
+        document.getElementById('espacoCadastrarUsuario').hidden = true;
+        document.getElementById('espacoProvas').hidden = true;
+        document.getElementById('espacoQuestoes').hidden = false;
+        
+        BuscarQuestoes(codigoProva, prova);
     }
 
     function AbreModalLogar(){
