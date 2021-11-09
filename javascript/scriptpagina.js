@@ -183,7 +183,7 @@ function MontaQuestoes(lista, prova){
         html += '       <h4 style="text-align: center;">' + lista[i].Materia + '</h4>';
         html += '   </td>';
         html += '   <td>';
-        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="informa('` + lista[i].Campoquestao + `')">Visualizar</button>`;
+        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="informa('` + lista[i].Campoquestao.replaceAll('\n', '<br>') + `')">Visualizar</button>`;
         html += '   </td>';
         html += '   <td>';
         html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="fazerQuestoes('` + lista[i].Codigo + `')">Responder</button>`;
