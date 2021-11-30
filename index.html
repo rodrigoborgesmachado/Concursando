@@ -107,6 +107,9 @@
             <li id="navbarLogar">
                 <a onclick="AbreModalLogar();">Logar</a>
             </li>
+            <li id="navbarProvas">
+                <a onclick="AbreListagemProvas();">Provas</a>
+            </li>
             <li id="navbarCadastrar">
                 <a  onclick="AbrePaginaCadastrar();">Registrar</a>
             </li>
@@ -189,6 +192,30 @@
                 <div class="row" id="espacoQuestoes">
                     
                 </div>
+                <div class="row" id="espacoExercicio">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <button class="buttonInicio" onclick="document.location.reload(true);">Início</button>
+
+                            <h4 style="text-align: left;">
+                                Tempo:
+                                <br>
+                                <b style="color: blue;" id="time">
+                                </b>
+                                <br>
+                                <br>
+                                <h1 style="text-align: center;color:blue;" id="lugarTotal">
+
+                                </h1>
+                            </h4>
+                        </div>
+                        <div class="col-sm-8">
+                            <h1 style="text-align: center;color:red;" id="lugarParaConta">
+
+                            </h1>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -206,6 +233,7 @@
     document.getElementById('espacoCadastrarUsuario').hidden = true;
     document.getElementById('espacoProvas').hidden = true;
     document.getElementById('espacoQuestoes').hidden = true;
+    document.getElementById('espacoExercicio').hidden = true;
     
     ControlaNavBar();
     removeLoader();
@@ -213,6 +241,7 @@
     function ControlaNavBar(){
         document.getElementById('navbarSair').style.display = sessionStorage.getItem('logado') != '1' ? 'none' : '';
         document.getElementById('navbarAlterarSenha').style.display = sessionStorage.getItem('logado') != '1' ? 'none' : '';
+        document.getElementById('navbarProvas').style.display = sessionStorage.getItem('logado') != '1' ? 'none' : '';
         
         document.getElementById('navbarLogar').style.display = sessionStorage.getItem('logado') == '1' ? 'none' : '';
         document.getElementById('navbarCadastrar').style.display = sessionStorage.getItem('logado') == '1' ? 'none' : '';
@@ -225,6 +254,8 @@
         document.getElementById('espacoCadastrarUsuario').hidden = false;
         document.getElementById('espacoProvas').hidden = true;
         document.getElementById('espacoQuestoes').hidden = true;
+        document.getElementById('espacoExercicio').hidden = true;
+        
         document.getElementById('nome').focus();
     }
 
@@ -240,6 +271,7 @@
         document.getElementById('espacoCadastrarUsuario').hidden = true;
         document.getElementById('espacoProvas').hidden = false;
         document.getElementById('espacoQuestoes').hidden = true;
+        document.getElementById('espacoExercicio').hidden = true;
         
         var codigoUsuario = sessionStorage.getItem('CodigoUsuario')
         BuscarProvas(codigoUsuario);
@@ -252,8 +284,22 @@
         document.getElementById('espacoCadastrarUsuario').hidden = true;
         document.getElementById('espacoProvas').hidden = true;
         document.getElementById('espacoQuestoes').hidden = false;
+        document.getElementById('espacoExercicio').hidden = true;
         
         BuscarQuestoes(codigoProva, prova);
+    }
+
+    function AbreFazerQuestao(codigoQuestao, codigoProva){
+        openLoader();
+
+        document.getElementById('espacoInicio').hidden = true;
+        document.getElementById('espacoCadastrarUsuario').hidden = true;
+        document.getElementById('espacoProvas').hidden = true;
+        document.getElementById('espacoQuestoes').hidden = true;
+        document.getElementById('espacoExercicio').hidden = false;
+        
+        PreencheTime();
+        PreencheQuestao(codigoQuestao, codigoProva);
     }
 
     function AbreModalLogar(){
@@ -351,6 +397,28 @@
         } catch (e) {
             console.log(e)
         }
+    }
+
+    function PreencheTime() {
+        document.getElementById('time').innerHTML = '00:00:00';
+        hora = 0;
+        minuto = 0;
+        segundo = 0;
+
+        interval = setInterval(function () {
+            segundo++;
+            if (segundo == 60) {
+                segundo = 0;
+                minuto++;
+            }
+            if (minuto == 60) {
+                minuto = 0;
+                hora++;
+            }
+            document.getElementById('time').innerHTML = (hora >= 10 ? hora : '0' + hora) + ":" +
+                (minuto >= 10 ? minuto : '0' + minuto) + ":" +
+                (segundo >= 10 ? segundo : '0' + segundo);
+        }, 1000);
     }
 
 </script>

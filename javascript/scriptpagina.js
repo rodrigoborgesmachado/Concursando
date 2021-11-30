@@ -2,6 +2,36 @@ function topo(){
 	parent.scroll(0,0);
 }
 
+function MontaOrdemLetras(i){
+    var retorno = '';
+    switch(i){
+        case 0: 
+            retorno = 'A';
+            break;
+
+        case 1: 
+            retorno = 'B';
+            break;
+
+        case 2: 
+            retorno = 'C';
+            break;
+
+        case 3: 
+            retorno = 'D';
+            break;    
+
+        case 4: 
+            retorno = 'E';
+            break;    
+        default:
+            retorno = 'F';
+            break;    
+    }
+    
+    return retorno;
+}
+
 function stringToHash(string) {
                   
     var hash = 0;
@@ -52,8 +82,11 @@ function downloadURI(uri, name) {
     delete link;
 }
 
+function showImageUri(div, uri){
+    document.getElementById(div).src = URL.createObjectURL(dataURLtoFile(uri, 'anexo'));
+}
+
 function dataURLtoFile(dataurl, filename) {
- 
     var arr = dataurl.split(','),
         mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]), 
@@ -78,78 +111,93 @@ function MontaHtmlProvasMobile(lista){
 function MontaHtmlProvasPc(lista){
     var html = '';
 
-    html+= `<div class="col-sm-12">
-                <h2 style="text-align: center;">Provas</h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th><h4 style="text-align: center;display: none;">Codigo</h4></th>
-                            <th><h4 style="text-align: center;">Prova</h4></th>
-                            <th><h4 style="text-align: center;">Data/Ano</h4></th>
-                            <th><h4 style="text-align: center;">Local</h4></th>
-                            <th><h4 style="text-align: center;">Tipo</h4></th>
-                            <th><h4 style="text-align: center;">Questões</h4></th>
-                            <th><h4 style="text-align: center;">Prova</h4></th>
-                            <th><h4 style="text-align: center;">Gabarito</h4></th>
-                            <th><h4 style="text-align: center;"></h4></th>
-                            <th><h4 style="text-align: center;` + (ehAdmin() ? '' : 'display: none;') + `"></h4></th>
-                            <th><h4 style="text-align: center;"></h4></th>
-                            </tr>
-                    </thread>
-                    <tbody>
-                `;
-    
+    html+= `<div class="col-sm-1">`;
+    html+= `</div>`;
+    html+= `<div class="col-sm-11">`;
     for (i = 0;i<lista.length;i++){
-        html += '<tr>';
-        html += '   <td>';
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-2">';
+        html += '       <h4 style="text-align: left;display: none;">Codigo</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += '       <h4 style="text-align: center;display: none;">' + lista[i].Codigo + '</h4>';
-        html += '   </td>';
-        html += '   <td>';
-        html += '       <h4 style="text-align: center;">' + lista[i].Nomeprova + '</h4>';
-        html += '   </td>';
-        html += '   <td>';
-        html += '       <h4 style="text-align: center;">' + lista[i].Dataaplicacao + '</h4>';
-        html += '   </td>';
-        html += '   <td>';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-2">';
+        html += '       <h4 style="text-align: left;"><b>Prova</b></h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
+        html += '       <h4 style="text-align: center;"><b>' + lista[i].Nomeprova + '</b></h4>';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-2">';
+        html += '       <h4 style="text-align: left;">Local</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += '       <h4 style="text-align: center;">' + lista[i].Local + '</h4>';
-        html += '   </td>';
-        html += '   <td>';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-2">';
+        html += '       <h4 style="text-align: left;">Data/Ano</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
+        html += '       <h4 style="text-align: center;">' + lista[i].Dataaplicacao + '</h4>';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-2">';
+        html += '       <h4 style="text-align: left;">Tipo</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += '       <h4 style="text-align: center;">' + lista[i].Tipoprova + '</h4>';
-        html += '   </td>';
-        html += '   <td>';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-2">';
+        html += '       <h4 style="text-align: left;">Questões</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += '       <h4 style="text-align: center;">' + lista[i].QuantidadeQuestoesResolvidas + '/' + lista[i].QuantidadeQuestoesTotal + '</h4>';
-        html += '   </td>';
-        html += '   <td>';
-        html += '       <span class="input-group-addon">';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-4">';
+        html += '       <h4 style="text-align: left;">Prova</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += `           <button type="button" class="btn btn-info" onclick="BuscarProva('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')"><i class="glyphicon glyphicon-list-alt"></i></button>`;
-        html += '       </span>';
-        html += '   </td>';
-        html += '   <td>';
-        html += '       <span class="input-group-addon">';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-4">';
+        html += '       <h4 style="text-align: left;">Gabarito</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += `           <button type="button" class="btn btn-info" onclick="BuscarGabarito('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')"><i class="glyphicon glyphicon-list-alt"></i></button>`;
-        html += '       </span>';
-        html += '   </td>';
-        html += '   <td>';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-4">';
         html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="AbreListagemQuestoesProva('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')">Questões</button>`;
-        html += '   </td>';
-        html += '   <td>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += `       <button type="button" style="text-align: center;` + (ehAdmin() ? '' : 'display: none;') + `;" class="btn btn-info" onclick="adicionarQuestao('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')">Adicionar Questões</button>`;
-        html += '   </td>';
-        html += '   <td>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
         html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="fazerQuestoes('` + lista[i].Codigo + `')">` + (lista[i].QuantidadeQuestoesResolvidas > 0 ? 'Continuar' : 'Iniciar') + `</button>`;
-        html += '   </td>';
-        html += '</tr>';
+        html += `   </div>`;
+        html += `</div><br><hr>`;
         
     }
-
-    html += `       </tbody>';
-                </table>';
-            </div>`;
+    html += `</div>`;
 
     return html;
 }
 
-function MontaQuestoes(lista, prova){
+function MontaQuestoes(lista, prova, codigoProva){
     var html = '';
 
     html+= `<div class="col-sm-12">
@@ -159,7 +207,6 @@ function MontaQuestoes(lista, prova){
                         <tr>
                             <th><h4 style="text-align: center;display: none;">Codigo</h4></th>
                             <th><h4 style="text-align: center;">Número</h4></th>
-                            <th><h4 style="text-align: center;">Descrição</h4></th>
                             <th><h4 style="text-align: center;">Matéria</h4></th>
                             <th><h4 style="text-align: center;"></h4></th>
                             <th><h4 style="text-align: center;"></h4></th>
@@ -171,22 +218,19 @@ function MontaQuestoes(lista, prova){
     for (i = 0;i<lista.length;i++){
         html += '<tr>';
         html += '   <td>';
-        html += '       <h4 style="text-align: center;display: none;">' + lista[i].Codigo + '</h4>';
+        html += '       <h4 style="text-align: center;display: none;">' + lista[i].questao.Codigo + '</h4>';
         html += '   </td>';
         html += '   <td>';
-        html += '       <h4 style="text-align: center;">' + lista[i].Numeroquestao + '</h4>';
+        html += '       <h4 style="text-align: center;">' + lista[i].questao.Numeroquestao + '</h4>';
         html += '   </td>';
         html += '   <td>';
-        html += '       <h4 style="text-align: center;">' + (lista[i].Campoquestao.length < 30 ? lista[i].Campoquestao : lista[i].Campoquestao.substring(0, 30) + '...') + '</h4>';
+        html += '       <h4 style="text-align: center;">' + lista[i].questao.Materia + '</h4>';
         html += '   </td>';
         html += '   <td>';
-        html += '       <h4 style="text-align: center;">' + lista[i].Materia + '</h4>';
+        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="BuscarQuestao(` + codigoProva + ',' + lista[i].questao.Codigo + `)">Visualizar</button>`;
         html += '   </td>';
         html += '   <td>';
-        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="informa('` + lista[i].Campoquestao.replaceAll('\n', '<br>') + `')">Visualizar</button>`;
-        html += '   </td>';
-        html += '   <td>';
-        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="fazerQuestoes('` + lista[i].Codigo + `')">Responder</button>`;
+        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="fazerQuestoes('` + lista[i].questao.Codigo + `')">Responder</button>`;
         html += '   </td>';
         html += '</tr>';
     }
@@ -311,7 +355,7 @@ function BuscarQuestoes(codigoProva, prova){
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
-            document.getElementById('espacoQuestoes').innerHTML = MontaQuestoes(JSON.parse(xhr.responseText).lista, prova);
+            document.getElementById('espacoQuestoes').innerHTML = MontaQuestoes(JSON.parse(xhr.responseText).lista, prova, codigoProva);
         } else {
             alert('Erro ao buscar questões');
         }
@@ -332,12 +376,10 @@ function RegistraRecuperacao(email, guid){
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
-            console.log(xhr.response);
+            alert(xhr.response);
             EnviaEmailRecuperacao(email, guid);
-            //window.close();
-            //sucesso!
+            removeLoader();
         } else {
-            //erro!
         }
     }
     );
@@ -357,7 +399,7 @@ function EnviaEmailRecuperacao(Destinatario, guid){
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
-            console.log(xhr.response);
+            alert(xhr.response);
             alert('Em até cinco minutos você receberá o email (confira o spam)!');
             //window.close();
             //sucesso!
@@ -471,4 +513,104 @@ function queryObj() {
 
 function ehAdmin(){
     return sessionStorage.getItem('admin') == '1';
+}
+
+function informaQuestao(questao){
+    informa('teste');
+}
+
+function MontaRespostas(questao){
+    var html = ``;
+
+    html += `<div class="row">`;
+
+    for(i = 0; i < questao.respostas.length;i++){
+        html+= `    <div class="col-sm-8">`;
+        html+= `        ${MontaOrdemLetras(i)} - ${questao.respostas[i].Textoresposta}`;
+        html+= `    </div>`;
+    }
+    html+= `</div>`;
+
+    return html;
+}
+
+function MontaQuestaoApresentacao(questao){
+    var html = '';
+    html += `<div class="row">`;
+    html+= `    <div class="col-sm-12">`;
+    html+= `        ` + questao.questao.Campoquestao;
+    html+= `    </div>`;
+    html+= `    <div class="col-sm-12">`;
+
+    if(!questao.questao.Campoquestao.includes('<img src="#" alt="Anexo" id="divAnexo'))
+    {
+        for(i = 0; i < questao.questao.anexosQuestao.length;i++){
+            html+= `    <img src="#" alt="Anexo" id="divAnexo${i}"/><br>`;
+        }
+    }
+    
+    html+= `    </div>`;
+    html+= `    <div class="col-sm-12">`;
+    html+= `        ` + MontaRespostas(questao);
+    html+= `    </div>`;
+    html+= `</div>`;
+
+    return html;
+}
+
+function BuscarQuestao(codigoProva, codigoQuestao){
+    var xhr = new XMLHttpRequest();
+    openLoader();
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarQuestoes.php?codigoProva=" + codigoProva + "&codigoQuestao=" + codigoQuestao);
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+            var obj = JSON.parse(xhr.responseText);
+            informa(MontaQuestaoApresentacao(obj.lista[0]));
+            
+            for(i = 0; i < obj.lista[0].questao.anexosQuestao.length;i++){
+                showImageUri('divAnexo' + i, obj.lista[0].questao.anexosQuestao[i].Anexo);
+            }
+        } else {
+            alert('Erro ao buscar questões');
+        }
+        removeLoader();
+    }
+    );
+
+    xhr.send();
+}
+
+function InsereResposta(Codigousuario, Codigoresposta){
+    var xhr = new XMLHttpRequest();
+
+    Password = stringToHash(Password);
+    var dados = JSON.stringify({Codigousuario, Codigoresposta});
+
+    xhr.open("POST", "http://concursando.sunsalesystem.com.br/PHP/InsereResposta.php");
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+            topo();
+            var retorno = JSON.parse(xhr.responseText);
+            if(retorno.RespostaCorreta){
+                document.getElementById('resposta' + Codigoresposta);
+                document.getElementById('resposta' + Codigoresposta).innerHTML += "<h5><strong>V</strong></h5>";
+            }
+            else{
+                document.getElementById('resposta' + Codigoresposta).innerHTML += "<h5><strong>X</strong></h5>";
+                document.getElementById('resposta' + Codigoresposta).style.borderColor = "#e10";
+            }
+        } else {
+            alert('Não foi possível inserir e validar a resposta');
+        }
+    }
+    );
+
+    xhr.send(dados);
+}
+
+function PreencheQuestao(codigoQuestao, codigoProva){
+
 }

@@ -1,13 +1,8 @@
 <?php
-if($_SERVER['HTTP_REFERER'] != 'http://concursando.sunsalesystem.com.br/EsqueciSenha.html'){
-    echo '';
-    return;
-}
-
 $postdata = file_get_contents("php://input");
 $request = json_decode($postdata);
 
-$url = "http://teste.sunsalesystem.com.br/api/email/enviar?isHtml=" . htmlspecialchars($_GET["isHtml"]);
+$url = "http://teste.sunsalesystem.com.br/api/concursando/InserirTeste";
 
 $curl = curl_init($url);
 curl_setopt($curl, CURLOPT_URL, $url);
@@ -18,13 +13,13 @@ $headers = array(
 	"Content-Type: application/json",
 );
 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+$var = $_SERVER['HTTP_REFERER'] . '|' . $_SERVER['REMOTE_ADDR'] . '|' . $_SERVER['HTTP_USER_AGENT'];
 $data = <<<DATA
 {
-    "Destinatario": '$request->Destinatario',
-    "Assunto": '$request->Assunto',
-    "Texto": '$request->Texto'
+    "testeCampo": '$var'
 }
 DATA;
+
 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 
 $resp = curl_exec($curl);

@@ -13,13 +13,16 @@
     <link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="javascript/scriptpagina.js"></script>
+    <script type="text/javascript" src="javascript/scriptpagina.obfuscated.js"></script>
     <script type="text/javascript" src="javascript/jquery.maskedinput.js"></script>
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 
 <body id="home" data-spy="scroll" data-target=".navbar" data-offset="60">
+    <div id="loading">
+        <img id="loading-image" src="images/hug.gif" alt="Loading..." />
+    </div>
     <div class="jumbotron">
         <div class="interna" style="background-color: #dddddd;" align="justify">
             <div id="contact" class="container-fluid bg-grey">
@@ -46,11 +49,37 @@
 </body>
 
 <script>
-    
+    removeLoader();
+
     function EnviarEmailRecupera(){
+        openLoader();
         var email = document.getElementById('email').value;
         document.getElementById('buttonRecupera').disabled = true;
         RecuperaSenha(email);
+    }
+
+    function removeLoader(){
+        $( "#loading" ).fadeOut(500, function() {
+            document.getElementById('loading').hidden = true;
+        });  
+    }
+
+    function openLoader(){
+        document.getElementById('loading').style["display"] = "";
+        pollVisibility();
+    }
+
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    async function pollVisibility() {
+        try {
+            if (document.getElementById("loading").style.display == '') {
+                return null;
+            } else {
+                return await delay(100).then(pollVisibility);
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
 
 </script>
