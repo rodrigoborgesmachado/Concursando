@@ -210,10 +210,13 @@
                             </h4>
                         </div>
                         <div class="col-sm-8">
-                            <h1 style="text-align: center;color:red;" id="lugarParaConta">
+                            <h4 id="lugarParaConta">
 
-                            </h1>
+                            </h4>
                         </div>
+                    </div>
+                    <div class="row" id="LugarProximaQuestao">
+
                     </div>
                 </div>
             </div>
@@ -237,6 +240,7 @@
     
     ControlaNavBar();
     removeLoader();
+    topo();
 
     function ControlaNavBar(){
         document.getElementById('navbarSair').style.display = sessionStorage.getItem('logado') != '1' ? 'none' : '';
@@ -273,8 +277,7 @@
         document.getElementById('espacoQuestoes').hidden = true;
         document.getElementById('espacoExercicio').hidden = true;
         
-        var codigoUsuario = sessionStorage.getItem('CodigoUsuario')
-        BuscarProvas(codigoUsuario);
+        BuscarProvas();
     }
 
     function AbreListagemQuestoesProva(codigoProva, prova){
@@ -289,7 +292,7 @@
         BuscarQuestoes(codigoProva, prova);
     }
 
-    function AbreFazerQuestao(codigoQuestao, codigoProva){
+    function AbreFazerQuestao(codigoProva, codigoQuestao){
         openLoader();
 
         document.getElementById('espacoInicio').hidden = true;

@@ -4,7 +4,7 @@ if($_SERVER['HTTP_REFERER'] != 'http://concursando.sunsalesystem.com.br/'){
     return;
 }
 
-$url = "http://teste.sunsalesystem.com.br/api/concursando/provas/getQuestoesProva?prova=" . htmlspecialchars($_GET["codigoProva"]);
+$url = "http://teste.sunsalesystem.com.br/api/concursando/provas/getQuestoesProva?usuario=" . htmlspecialchars($_GET["usuario"]) . "&prova=" . htmlspecialchars($_GET["codigoProva"]);
 
 $curl = curl_init($url);
 curl_setopt($curl, CURLOPT_URL, $url);

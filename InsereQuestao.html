@@ -44,11 +44,23 @@
                 <div class="row">
                     <div class="col-sm-12" id="descricaoProva">
                     </div>
-                    <div class="col-sm-12">
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" id="descricaoProva">
                         <h3>
                             Questão
                         </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-10">
                         <textarea class="form-control" id="questao" name="questao" placeholder="Descrição da questão" type="text" required rows="30"></textarea>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-info" onclick="document.getElementById('questao').value += '<b></b>'">Negrito</button><br><br>
+                        <button type="button" class="btn btn-info" onclick="document.getElementById('questao').value += '<i></i>'">Itálico</button><br><br>
+                        <button type="button" class="btn btn-info" onclick="document.getElementById('questao').value += '<br>'">Saltar Linha</button><br><br>
+                        <button type="button" class="btn btn-info" onclick="document.getElementById('questao').value += `<img src='#' alt='Anexo' id='divAnexo` + contadorImagem + `'/>`; contadorImagem++">Imagem</button><br><br>
                     </div>
                 </div>
                 <div class="row">
@@ -129,6 +141,7 @@
     questoesAnexo = new Array();
     respostasAnexo = new Array();
     removeLoader();
+    let contadorImagem=0;
 
     function getDataURLQuestao() {
         var feito = false;
@@ -163,6 +176,10 @@
     }
 
     let numeroQuestoes = 0;
+    adicionarResposta();
+    adicionarResposta();
+    adicionarResposta();
+    adicionarResposta();
     adicionarResposta();
 
     function adicionarResposta(){
@@ -219,7 +236,6 @@
         texto.innerHTML = '<p>' + textoModal + '</p>';
 
         $("#myModal").modal();
-        document.getElementById('UserLogin').focus();
     }
 
     class Anexo{
@@ -258,8 +274,11 @@
 
     function MontaQuestao(){
         var Campoquestao = document.getElementById('questao').value;
+        Campoquestao = Campoquestao.replaceAll("'", '"');
         var Observacaoquestao = document.getElementById('observacaoQuestao').value;
+        Observacaoquestao = Observacaoquestao.replaceAll("'", '"');
         var Materia = document.getElementById('materia').value;
+        Materia = Materia.replaceAll("'", '"');
         var Codigoprova = queryObj().Prova;
         var Numeroquestao = document.getElementById('numeroQuestao').value;
         var anexosQuestao = new Array();
@@ -311,9 +330,14 @@
         xhr.addEventListener("load", function() {
             removeLoader();
             if (xhr.status == 200) {
-                alert('Inserido com sucesso!');
-                location.reload();
-                topo();
+                if(JSON.parse(xhr.response).Sucesso){
+                    alert('Inserido com sucesso!');
+                    location.reload();
+                    topo();
+                }
+                else{
+                    alert(JSON.parse(xhr.response).Mensagem);
+                }
             } else {
                 alert('Não foi possível inserir');
             }

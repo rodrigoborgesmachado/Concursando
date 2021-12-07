@@ -104,6 +104,10 @@ function logado(){
     return sessionStorage.getItem('logado') == '1';
 }
 
+function usuarioLogado(){
+    return sessionStorage.getItem('CodigoUsuario');
+}
+
 function MontaHtmlProvasMobile(lista){
     return MontaHtmlProvasPc(lista);
 }
@@ -157,6 +161,14 @@ function MontaHtmlProvasPc(lista){
         html += `</div>`;
         html += `<div class="row">`;
         html += '   <div class="col-sm-2">';
+        html += '       <h4 style="text-align: left;">Banca</h4>';
+        html += `   </div>`;
+        html += '   <div class="col-sm-4">';
+        html += '       <h4 style="text-align: center;">' + lista[i].Banca + '</h4>';
+        html += `   </div>`;
+        html += `</div>`;
+        html += `<div class="row">`;
+        html += '   <div class="col-sm-2">';
         html += '       <h4 style="text-align: left;">Questões</h4>';
         html += `   </div>`;
         html += '   <div class="col-sm-4">';
@@ -186,9 +198,6 @@ function MontaHtmlProvasPc(lista){
         html += '   <div class="col-sm-4">';
         html += `       <button type="button" style="text-align: center;` + (ehAdmin() ? '' : 'display: none;') + `;" class="btn btn-info" onclick="adicionarQuestao('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')">Adicionar Questões</button>`;
         html += `   </div>`;
-        html += '   <div class="col-sm-4">';
-        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="fazerQuestoes('` + lista[i].Codigo + `')">` + (lista[i].QuantidadeQuestoesResolvidas > 0 ? 'Continuar' : 'Iniciar') + `</button>`;
-        html += `   </div>`;
         html += `</div><br><hr>`;
         
     }
@@ -208,6 +217,7 @@ function MontaQuestoes(lista, prova, codigoProva){
                             <th><h4 style="text-align: center;display: none;">Codigo</h4></th>
                             <th><h4 style="text-align: center;">Número</h4></th>
                             <th><h4 style="text-align: center;">Matéria</h4></th>
+                            <th><h4 style="text-align: center;">Respondido</h4></th>
                             <th><h4 style="text-align: center;"></h4></th>
                             <th><h4 style="text-align: center;"></h4></th>
                         </tr>
@@ -227,10 +237,13 @@ function MontaQuestoes(lista, prova, codigoProva){
         html += '       <h4 style="text-align: center;">' + lista[i].questao.Materia + '</h4>';
         html += '   </td>';
         html += '   <td>';
-        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="BuscarQuestao(` + codigoProva + ',' + lista[i].questao.Codigo + `)">Visualizar</button>`;
+        html += '       <h4 style="text-align: center;">' + (lista[i].respostaUsuario != null && lista[i].respostaUsuario.length > 0 ? `<b><p class="respondido">Respondido</h4><b>` : ``) + '</p>';
         html += '   </td>';
         html += '   <td>';
-        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="fazerQuestoes('` + lista[i].questao.Codigo + `')">Responder</button>`;
+        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="BuscarQuestao(` + codigoProva + ',' + lista[i].questao.Codigo + `, true)">Visualizar</button>`;
+        html += '   </td>';
+        html += '   <td>';
+        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="AbreFazerQuestao(` + codigoProva + `, ` + lista[i].questao.Codigo + `)">Responder</button>`;
         html += '   </td>';
         html += '</tr>';
     }
@@ -246,10 +259,10 @@ function adicionarQuestao(prova, descricao){
     window.open('http://concursando.sunsalesystem.com.br/InsereQuestao.html?Prova=' + prova + '&Descricao=' + descricao, '_blank');
 }
 
-function InserirProva(Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, ProvaArquivo, Gabarito, CodigoUsuario){
+function InserirProva(Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, ProvaArquivo, Gabarito, CodigoUsuario, Banca){
     var xhr = new XMLHttpRequest();
 
-    var dados = JSON.stringify({Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, CodigoUsuario, ProvaArquivo, Gabarito});
+    var dados = JSON.stringify({Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, CodigoUsuario, ProvaArquivo, Gabarito, Banca});
 
     xhr.open("POST", "http://concursando.sunsalesystem.com.br/PHP/InsereProva.php");
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -327,9 +340,9 @@ function Login(login, pass){
     xhr.send(null);
 }
 
-function BuscarProvas(codigoUsuario){
+function BuscarProvas(){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarProvas.php?codigoUsuario=" + codigoUsuario);
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarProvas.php?codigoUsuario=" + usuarioLogado());
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
@@ -351,7 +364,7 @@ function BuscarProvas(codigoUsuario){
 
 function BuscarQuestoes(codigoProva, prova){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarQuestoesProva.php?codigoProva=" + codigoProva);
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarQuestoesProva.php?usuario=" + usuarioLogado() + "&codigoProva=" + codigoProva);
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
@@ -519,14 +532,31 @@ function informaQuestao(questao){
     informa('teste');
 }
 
-function MontaRespostas(questao){
+function MontaRespostas(questao, modal){
     var html = ``;
 
     html += `<div class="row">`;
 
     for(i = 0; i < questao.respostas.length;i++){
         html+= `    <div class="col-sm-8">`;
-        html+= `        ${MontaOrdemLetras(i)} - ${questao.respostas[i].Textoresposta}`;
+        if(!modal){
+            html += `       <input type="radio" id="html" name="questao${questao.Codigo}" value="HTML" onclick="InsereResposta(${usuarioLogado()}, ${questao.respostas[i].Codigo})">`
+            html+= `        ${MontaOrdemLetras(i)} - ${questao.respostas[i].Textoresposta}`;
+        }
+        else{
+            html+= `        ${MontaOrdemLetras(i)} - ${questao.respostas[i].Textoresposta}`;
+        }
+        if(!questao.respostas[i].Textoresposta.includes('<img src="#" alt="Anexo" id="divAnexoResposta'))
+        {
+            if(questao.respostas[i].anexos != null){
+                for(j = 0; j < questao.respostas[i].anexos.length;j++){
+                    html+= `    <img src="#" alt="Anexo" id="divAnexoResposta${i}${j}"/><br>`;
+                }
+            }
+        }
+        else{
+            html+= `        ${MontaOrdemLetras(i)} - ${questao.respostas[i].Textoresposta}`;
+        }
         html+= `    </div>`;
     }
     html+= `</div>`;
@@ -534,7 +564,7 @@ function MontaRespostas(questao){
     return html;
 }
 
-function MontaQuestaoApresentacao(questao){
+function MontaQuestaoApresentacao(questao, modal){
     var html = '';
     html += `<div class="row">`;
     html+= `    <div class="col-sm-12">`;
@@ -551,25 +581,50 @@ function MontaQuestaoApresentacao(questao){
     
     html+= `    </div>`;
     html+= `    <div class="col-sm-12">`;
-    html+= `        ` + MontaRespostas(questao);
+    html+= `        ` + MontaRespostas(questao, modal);
     html+= `    </div>`;
     html+= `</div>`;
 
     return html;
 }
 
-function BuscarQuestao(codigoProva, codigoQuestao){
+function BuscarQuestao(codigoProva, codigoQuestao, modal){
     var xhr = new XMLHttpRequest();
     openLoader();
-    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarQuestoes.php?codigoProva=" + codigoProva + "&codigoQuestao=" + codigoQuestao);
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarQuestoes.php?usuario=" + usuarioLogado() + "&codigoProva=" + codigoProva + "&codigoQuestao=" + codigoQuestao);
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
             var obj = JSON.parse(xhr.responseText);
-            informa(MontaQuestaoApresentacao(obj.lista[0]));
-            
-            for(i = 0; i < obj.lista[0].questao.anexosQuestao.length;i++){
-                showImageUri('divAnexo' + i, obj.lista[0].questao.anexosQuestao[i].Anexo);
+            if(modal)
+                informa(MontaQuestaoApresentacao(obj.lista[0], modal));
+            else
+                document.getElementById('lugarParaConta').innerHTML = MontaQuestaoApresentacao(obj.lista[0]);
+
+            if(obj.lista[0].questao.anexosQuestao != null){
+                for(i = 0; i < obj.lista[0].questao.anexosQuestao.length;i++){
+                    showImageUri('divAnexo' + i, obj.lista[0].questao.anexosQuestao[i].Anexo);
+                }
+            }
+
+            for(i = 0; i < obj.lista[0].respostas.length;i++){
+                if(obj.lista[0].respostas[i].anexos != null){
+                    for(j = 0; j < obj.lista[0].respostas[i].anexos.length;j++){
+                        showImageUri('divAnexoResposta' + i + '' + j, obj.lista[0].respostas[i].anexos[j].Anexo);
+                    }
+                }
+            }
+            if(!modal){
+                document.getElementById('LugarProximaQuestao').innerHTML = `
+                    <div class="col-sm-2">
+                        <button class="buttonInicio" onclick="RevelaRespostaQuestao(${codigoQuestao}, ${codigoProva});">Revelar Resposta</button>
+                    </div>
+                    <div class="col-sm-8">
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="buttonInicio" onclick="BuscaProximaQuestao(${codigoProva}, ${ obj.lista[0].questao.Numeroquestao});">Próxima</button>
+                    </div>
+                `;
             }
         } else {
             alert('Erro ao buscar questões');
@@ -583,8 +638,7 @@ function BuscarQuestao(codigoProva, codigoQuestao){
 
 function InsereResposta(Codigousuario, Codigoresposta){
     var xhr = new XMLHttpRequest();
-
-    Password = stringToHash(Password);
+    openLoader();
     var dados = JSON.stringify({Codigousuario, Codigoresposta});
 
     xhr.open("POST", "http://concursando.sunsalesystem.com.br/PHP/InsereResposta.php");
@@ -592,19 +646,17 @@ function InsereResposta(Codigousuario, Codigoresposta){
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
-            topo();
             var retorno = JSON.parse(xhr.responseText);
-            if(retorno.RespostaCorreta){
-                document.getElementById('resposta' + Codigoresposta);
-                document.getElementById('resposta' + Codigoresposta).innerHTML += "<h5><strong>V</strong></h5>";
+            if(!retorno.RespostaCorreta){
+                informa('Resposta incorreta');
             }
             else{
-                document.getElementById('resposta' + Codigoresposta).innerHTML += "<h5><strong>X</strong></h5>";
-                document.getElementById('resposta' + Codigoresposta).style.borderColor = "#e10";
+                informa('Resposta correta')
             }
         } else {
             alert('Não foi possível inserir e validar a resposta');
         }
+        removeLoader();
     }
     );
 
@@ -612,5 +664,58 @@ function InsereResposta(Codigousuario, Codigoresposta){
 }
 
 function PreencheQuestao(codigoQuestao, codigoProva){
+    BuscarQuestao(codigoProva, codigoQuestao, false);
+}
 
+function RevelaRespostaQuestao(codigoQuestao, codigoProva){
+    var xhr = new XMLHttpRequest();
+    openLoader();
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarRespostaCorreta.php?codigoProva=" + codigoProva + "&codigoquestao=" + codigoQuestao + "");
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+            var retorno = JSON.parse(xhr.responseText);
+            if(retorno.Sucesso){
+                informa(retorno.TextoResposta);
+            }
+            else{
+                alert('Erro');
+            }
+        } else {
+            alert('Não foi possível inserir e validar a resposta');
+        }
+        removeLoader();
+    }
+    );
+
+    xhr.send();    
+}
+
+function BuscaProximaQuestao(codigoProva, numeroQuestaoAtual){
+    var xhr = new XMLHttpRequest();
+    openLoader();
+
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarProximaQuestao.php?usuario=" + usuarioLogado() +"&codigoProva=" + codigoProva + "&numeroQuestao=" + numeroQuestaoAtual +"");
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+            var retorno = JSON.parse(xhr.responseText);
+
+            if(retorno.Sucesso){
+                BuscarQuestao(retorno.lista[0].questao.Codigoprova, retorno.lista[0].questao.Codigo, false);
+            }
+            else{
+                alert(retorno.Mensagem);
+            }
+            topo();
+        } else {
+            alert('Não foi possível inserir e validar a resposta');
+        }
+        removeLoader();
+    }
+    );
+
+    xhr.send();    
 }

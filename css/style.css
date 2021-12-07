@@ -364,3 +364,6 @@ code {
     margin-right: auto;
     z-index: 100003 !important;
 }
+.respondido{
+    color: green;
+}

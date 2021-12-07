@@ -24,7 +24,8 @@ if(strpos($_SERVER['HTTP_REFERER'], 'http://concursando.sunsalesystem.com.br/') 
         "Gabarito": '$request->Gabarito',
         "Observacaoprova": '$request->Observacaoprova',
         "Observacaogabarito": '$request->Observacaogabarito',
-        "CodigoUsuario": $request->CodigoUsuario
+        "CodigoUsuario": $request->CodigoUsuario',
+        "Banca": $request->Banca
     }
     DATA;
     

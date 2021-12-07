@@ -53,6 +53,10 @@
                         </h3>
                         <input class="form-control" id="tipo" name="tipo" placeholder="Prova Azul; Tipo I" type="text" required>
                         <h3>
+                            Banca
+                        </h3>
+                        <input class="form-control" id="banca" name="banca" placeholder="Instituto Nacional de Estudos e Pesquisas Educacionais (INEP)" type="text" required>
+                        <h3>
                             Data de aplicação
                         </h3>
                         <input class="form-control" id="dataAplicacao" name="dataAplicacao" placeholder="2020" type="text" required>
@@ -159,12 +163,13 @@
         var Observacaoprova = document.getElementById('observacaoProva').value;
         var Observacaogabarito = document.getElementById('observacaoGabarito').value;
         var CodigoUsuario = sessionStorage.getItem('CodigoUsuario');
+        var Banca = document.getElementById('banca').value;
 
         console.log(ProvaArquivo);
         console.log(Gabarito);
         document.getElementById('botaoCadastrar').disabled = true;
 
-        InserirProva(Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, ProvaArquivo, Gabarito, CodigoUsuario);
+        InserirProva(Nomeprova, Local, Tipoprova, Dataaplicacao, Observacaoprova, Observacaogabarito, ProvaArquivo, Gabarito, CodigoUsuario, Banca);
         Gabarito = null;
         ProvaArquivo = null;
     }
