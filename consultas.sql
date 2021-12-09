@@ -111,7 +111,8 @@ SELECT * FROM rodrigo.ANEXORESPOSTA
 SELECT * FROM rodrigo.RESPOSTASUSUARIOS 
 SELECT * FROM rodrigo.RESPOSTASQUESTOES
 SELECT * FROM rodrigo.QUESTOES 
-SELECT * FROM rodrigo.ANEXOSQUESTOES WHERE CODIGOQUESTAO = 153
+--UPDATE rodrigo.QUESTOES SET CAMPOQUESTAO = '<b>Questão 100</b><br>Nos dias atuais, o amplo uso de objetos de plásticogera bastante lixo, que muitas vezes é eliminado pelapopulação por meio da queima. Esse procedimento éprejudicial ao meio ambiente por lançar substânciaspoluentes. Para constatar esse problema, um estudanteanalisou a decomposição térmica do policloreto devinila (PVC), um tipo de plástico, cuja estrutura érepresentada na figura.<br><img src="#" alt="Anexo" id="divAnexo0"/><br><br>Qual foi o gás liberado majoritariamente na decomposiçãotérmica desse tipo de plástico?'WHERE CODIGO = 222
+SELECT * FROM rodrigo.ANEXOSQUESTOES WHERE CODIGOQUESTAO = 222
 SELECT * FROM rodrigo.RESPOSTASUSUARIOS RES WHERE CODIGOUSUARIO = 15 AND EXISTS (
 	SELECT 1 FROM rodrigo.RESPOSTASQUESTOES RES1 INNER JOIN rodrigo.QUESTOES Q ON RES1.CODIGOQUESTAO = Q.CODIGO
 	WHERE RES1.CODIGO = RES.CODIGORESPOSTA AND Q.CODIGO = 123

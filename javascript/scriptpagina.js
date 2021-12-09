@@ -619,7 +619,12 @@ function BuscarQuestao(codigoProva, codigoQuestao, modal){
                     <div class="col-sm-2">
                         <button class="buttonInicio" onclick="RevelaRespostaQuestao(${codigoQuestao}, ${codigoProva});">Revelar Resposta</button>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-5">
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="buttonInicio" onclick="BuscaQuestaoAnterior(${codigoProva}, ${ obj.lista[0].questao.Numeroquestao});">Anterior</button>
+                    </div>
+                    <div class="col-sm-1">
                     </div>
                     <div class="col-sm-2">
                         <button class="buttonInicio" onclick="BuscaProximaQuestao(${codigoProva}, ${ obj.lista[0].questao.Numeroquestao});">Próxima</button>
@@ -697,6 +702,34 @@ function BuscaProximaQuestao(codigoProva, numeroQuestaoAtual){
     openLoader();
 
     xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarProximaQuestao.php?usuario=" + usuarioLogado() +"&codigoProva=" + codigoProva + "&numeroQuestao=" + numeroQuestaoAtual +"");
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+            var retorno = JSON.parse(xhr.responseText);
+
+            if(retorno.Sucesso){
+                BuscarQuestao(retorno.lista[0].questao.Codigoprova, retorno.lista[0].questao.Codigo, false);
+            }
+            else{
+                alert(retorno.Mensagem);
+            }
+            topo();
+        } else {
+            alert('Não foi possível inserir e validar a resposta');
+        }
+        removeLoader();
+    }
+    );
+
+    xhr.send();    
+}
+
+function BuscaQuestaoAnterior(codigoProva, numeroQuestaoAtual){
+    var xhr = new XMLHttpRequest();
+    openLoader();
+
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarQuestaoAnterior.php?usuario=" + usuarioLogado() +"&codigoProva=" + codigoProva + "&numeroQuestao=" + numeroQuestaoAtual +"");
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.addEventListener("load", function() {
