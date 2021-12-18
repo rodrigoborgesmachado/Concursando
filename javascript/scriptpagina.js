@@ -192,8 +192,11 @@ function MontaHtmlProvasPc(lista){
         html += `   </div>`;
         html += `</div>`;
         html += `<div class="row">`;
-        html += '   <div class="col-sm-4">';
+        html += '   <div class="col-sm-3">';
         html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="AbreListagemQuestoesProva('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')">Questões</button>`;
+        html += `   </div>`;
+        html += '   <div class="col-sm-3">';
+        html += `       <button type="button" style="text-align: center;" class="btn btn-info" onclick="AbreQuestaoInicial(${lista[i].Codigo})">${(parseInt(lista[i].QuantidadeQuestoesResolvidas) == 0 ? 'Iniciar' : 'Continuar')}</button>`;
         html += `   </div>`;
         html += '   <div class="col-sm-4">';
         html += `       <button type="button" style="text-align: center;` + (ehAdmin() ? '' : 'display: none;') + `;" class="btn btn-info" onclick="adicionarQuestao('` + lista[i].Codigo + `', '` + lista[i].Nomeprova + `')">Adicionar Questões</button>`;
@@ -737,6 +740,39 @@ function BuscaQuestaoAnterior(codigoProva, numeroQuestaoAtual){
             var retorno = JSON.parse(xhr.responseText);
 
             if(retorno.Sucesso){
+                BuscarQuestao(retorno.lista[0].questao.Codigoprova, retorno.lista[0].questao.Codigo, false);
+            }
+            else{
+                alert(retorno.Mensagem);
+            }
+            topo();
+        } else {
+            alert('Não foi possível inserir e validar a resposta');
+        }
+        removeLoader();
+    }
+    );
+
+    xhr.send();    
+}
+
+function AbreQuestaoInicial(codigoProva){
+    var xhr = new XMLHttpRequest();
+    openLoader();
+
+    xhr.open("GET", "http://concursando.sunsalesystem.com.br/PHP/BuscarProximaNaoRespondida.php?usuario=" + usuarioLogado() +"&codigoProva=" + codigoProva);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.addEventListener("load", function() {
+        if (xhr.status == 200) {
+            var retorno = JSON.parse(xhr.responseText);
+
+            if(retorno.Sucesso){
+                document.getElementById('espacoInicio').hidden = true;
+                document.getElementById('espacoCadastrarUsuario').hidden = true;
+                document.getElementById('espacoProvas').hidden = true;
+                document.getElementById('espacoQuestoes').hidden = true;
+                document.getElementById('espacoExercicio').hidden = false;
                 BuscarQuestao(retorno.lista[0].questao.Codigoprova, retorno.lista[0].questao.Codigo, false);
             }
             else{
