@@ -475,9 +475,8 @@ function BuscarProva(codigo, nomeProva){
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
-
-            console.log(JSON.parse(xhr.response).Arquivo);
-            downloadURI(JSON.parse(xhr.response).Arquivo, nomeProva + '_prova.pdf');
+            //downloadURI(JSON.parse(xhr.response).Arquivo, nomeProva + '_prova.pdf');
+            window.open(JSON.parse(xhr.response).Arquivo, '_blank').focus();
             //sucesso!
         } else {
             //erro!
@@ -498,7 +497,8 @@ function BuscarGabarito(codigo, nomeProva){
 
     xhr.addEventListener("load", function() {
         if (xhr.status == 200) {
-            downloadURI(JSON.parse(xhr.response).Arquivo, nomeProva + '_gabarito.pdf');
+            //downloadURI(JSON.parse(xhr.response).Arquivo, nomeProva + '_gabarito.pdf');
+            window.open(JSON.parse(xhr.response).Arquivo, '_blank').focus();
             //sucesso!
         } else {
             //erro!
